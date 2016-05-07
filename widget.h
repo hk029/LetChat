@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QtNetwork>
+
+#define PORT 11223
+
 namespace Ui {
 class Widget;
 }
@@ -14,6 +17,7 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
+    bool setHostIP(QString);
 
 private slots:
     void processPendingDatagram();
@@ -25,6 +29,8 @@ void on_pushButton_clicked();
 
 private:
     int blockSize;
+    QHostAddress *hostIP;
+    int port;
     Ui::Widget *ui;
     QUdpSocket *socket;
 //    QTcpSocket *tcpSocket;

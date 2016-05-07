@@ -11,14 +11,15 @@ Widget::Widget(QWidget *parent) :
     qDebug() <<"IP Address: "<<info.addresses();
     qDebug() <<"localHostName: "<<localHostName;
 
+    hostIP = new QHostAddress("localhost");
     socket = new QUdpSocket(this);
-    socket->bind(11223,QUdpSocket::ShareAddress);
+    socket->bind(PORT,QUdpSocket::ShareAddress);
     connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
 
 //    tcpSocket = new QTcpSocket(this);
 //    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
 //    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
-//             this,SLOT(displayError(QAbstractSocket::SocketError)));
+
 }
 
 Widget::~Widget()
@@ -48,11 +49,14 @@ void Widget::on_pushButton_clicked()
 {
     QString str =  this->ui->plainTextEdit->toPlainText();
     QByteArray data = str.toAscii();
-    socket->writeDatagram(data,QHostAddress("192.168.0.128"),11223);
+    socket->writeDatagram(data,*hostIP,PORT);
 }
 
 
-
+ bool Widget::setHostIP(QString ip)
+{
+    return this->hostIP->setAddress(ip);
+}
 
 //void Widget::newConnect()
 //{
