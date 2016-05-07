@@ -8,7 +8,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
 
 
-    hostIP = new QHostAddress(QHostAddress::LocalHost);
+    hostIP = new QHostAddress(QHostAddress::Broadcast);
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
     connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
@@ -47,7 +47,7 @@ void Widget::processPendingDatagram() //处理等待的数据报
        //接收数据报，将其存放到datagram中
        socket->readDatagram(datagram.data(),datagram.size());
        //将数据报内容显示出来
-       ui->textBrowser->setText(datagram);
+       ui->textBrowser->append(datagram);
 //       ui->label->setText(datagram);
     }
 }
@@ -58,6 +58,7 @@ void Widget::on_pushButton_clicked()
     str = this->getIP()+":"+str;
     QByteArray data = str.toAscii();
     socket->writeDatagram(data,*hostIP,PORT);
+    this->ui->plainTextEdit->clear();
 }
 
 
