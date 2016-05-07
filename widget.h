@@ -18,7 +18,7 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
     bool setHostIP(QString);
-
+    QString getIP();
 private slots:
     void processPendingDatagram();
 //    void newConnect(); //连接服务器

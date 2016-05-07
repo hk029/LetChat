@@ -6,12 +6,9 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    QString localHostName = QHostInfo::localHostName();
-    QHostInfo info = QHostInfo::fromName(localHostName);
-    qDebug() <<"IP Address: "<<info.addresses();
-    qDebug() <<"localHostName: "<<localHostName;
 
-    hostIP = new QHostAddress("localhost");
+
+    hostIP = new QHostAddress(QHostAddress::LocalHost);
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
     connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
@@ -27,7 +24,17 @@ Widget::~Widget()
     delete ui;
 }
 
-
+QString Widget::getIP()  //获取ip地址
+{
+    QList<QHostAddress> list = QNetworkInterface::allAddresses();
+    foreach (QHostAddress address, list)
+    {
+       //我们使用IPv4地址
+       if(address.protocol() == QAbstractSocket::IPv4Protocol)
+           return address.toString();
+    }
+    return 0;
+}
 
 void Widget::processPendingDatagram() //处理等待的数据报
 {
@@ -48,6 +55,7 @@ void Widget::processPendingDatagram() //处理等待的数据报
 void Widget::on_pushButton_clicked()
 {
     QString str =  this->ui->plainTextEdit->toPlainText();
+    str = this->getIP()+":"+str;
     QByteArray data = str.toAscii();
     socket->writeDatagram(data,*hostIP,PORT);
 }
