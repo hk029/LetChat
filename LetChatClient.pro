@@ -11,8 +11,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        widget.cpp
+        widget.cpp \
+    multichat.cpp
 
-HEADERS  += widget.h
+HEADERS  += widget.h \
+    multichat.h
 
-FORMS    += widget.ui
+FORMS    += widget.ui \
+    multichat.ui
