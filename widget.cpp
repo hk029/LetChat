@@ -7,7 +7,7 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
+    name = "my";
     hostIP = new QHostAddress(QHostAddress::Broadcast);
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
@@ -55,7 +55,7 @@ void Widget::processPendingDatagram() //处理等待的数据报
 void Widget::on_pushButton_clicked()
 {
     QString str =  this->ui->plainTextEdit->toPlainText();
-    str = this->getIP()+":"+str;
+    str = name+":"+str;
     QByteArray data = str.toAscii();
     socket->writeDatagram(data,*hostIP,PORT);
     this->ui->plainTextEdit->clear();

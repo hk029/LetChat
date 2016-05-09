@@ -31,6 +31,7 @@ private:
     int blockSize;
     QHostAddress *hostIP;
     int port;
+    QString name;
     Ui::Widget *ui;
     QUdpSocket *socket;
 //    QTcpSocket *tcpSocket;
