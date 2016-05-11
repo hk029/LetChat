@@ -11,10 +11,16 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-    multichatdlg.cpp
+    multichatdlg.cpp \
+    maindlg.cpp
 
 HEADERS  += \
-    multichatdlg.h
+    multichatdlg.h \
+    maindlg.h
 
 FORMS    += \
-    multichatdlg.ui
+    multichatdlg.ui \
+    maindlg.ui
+
+RESOURCES += \
+    image.qrc

@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/icon_close.png</file>
+        <file>img/bkg.png</file>
+        <file>img/bkg_main.png</file>
+        <file>img/photo.png</file>
+        <file>img/icon_mini.png</file>
+    </qresource>
+</RCC>

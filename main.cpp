@@ -1,5 +1,6 @@
 #include <QtGui/QApplication>
 #include "multichatdlg.h"
+#include "maindlg.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -9,7 +10,9 @@ int main(int argc, char *argv[])
 
     QTextCodec::setCodecForLocale(codec);
     QTextCodec::setCodecForCStrings(codec);
-    MultiChatDlg m;
+
+    MainDlg m;
+    //MultiChatDlg m;
     m.show();
 //    Widget w;
 //    w.show();
