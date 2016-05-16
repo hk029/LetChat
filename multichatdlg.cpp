@@ -12,7 +12,44 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
     connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    this->setAttribute(Qt::WA_TranslucentBackground);
 
+    bkg.load(":/img/bkg.png");
+     //*********************标题栏*********************//
+    QIcon icon;
+    QPixmap icon_close(":/img/icon_close.png");
+    QPixmap icon_mini(":/img/icon_mini.png");
+    icon_close.scaled(this->ui->icon_close->size());
+    icon_mini.scaled(this->ui->icon_mini->size());
+    icon.addPixmap(icon_close);
+    this->ui->icon_close->setIcon(icon);
+    icon.addPixmap(icon_mini);
+    this->ui->icon_mini->setIcon(icon);
+
+
+
+    this->setStyleSheet("QLabel{"
+                        "color:#4a4a4a;"
+                         "}"
+
+                        "QPushButton{"
+                        "background-color:#3dce3d;color:white;"
+                        "border:0px;"
+                        "}"
+                        "QTextBrowser{"
+                        "color:red;"
+                        "}"
+                        "QToolButton{"
+                        "border:0px;"
+                        "}"
+                        "QToolButton:hover{"
+                        "background-color:#ff5400;"
+                        "}"
+                        "QPushButton:hover{"
+                        "background-color:#D35400;"
+                        "}"
+                        );
 //    tcpSocket = new QTcpSocket(this);
 //    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
 //    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
@@ -62,6 +99,14 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 MultiChatDlg::~MultiChatDlg()
 {
     delete ui;
+}
+
+
+void MultiChatDlg::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.drawPixmap(0,0,bkg.scaled(this->size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)); // 绘制不规则背景
+
 }
 
 QString MultiChatDlg::getIP()  //获取ip地址
@@ -158,8 +203,30 @@ void MultiChatDlg::on_sendButton_clicked()
     QString str =  this->ui->sendMsg->toPlainText();
     str = name+":"+str;
     QByteArray data = str.toAscii();
+    this->ui->receiveMsg->append(str);
     socket->writeDatagram(data,*hostIP,PORT);
     this->ui->sendMsg->clear();
 }
 
+
+void MultiChatDlg::on_icon_close_clicked()
+{
+    this->close();
+}
+
+
+void MultiChatDlg::mousePressEvent(QMouseEvent *event){
+        QPoint windowPos = this->pos();
+        QPoint mousePos = event->globalPos();
+        this->dPos = mousePos - windowPos;
+
+}
+void MultiChatDlg::mouseMoveEvent(QMouseEvent *event){
+        this->move(event->globalPos() - this->dPos);
+}
+
+void MultiChatDlg::on_icon_mini_clicked()
+{
+    this->showMinimized();
+}
 

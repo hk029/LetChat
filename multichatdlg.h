@@ -2,8 +2,13 @@
 #define MULTICHATDLG_H
 
 #include <QDialog>
+
 #include <QtNetwork>
+
 #include <QStandardItemModel>
+
+#include "QPainter"
+
 
 #define PORT 11223
 namespace Ui {
@@ -18,8 +23,19 @@ public:
     ~MultiChatDlg();
     bool setHostIP(QString);
     QString getIP();
+
 private slots:
     void processPendingDatagram();
+
+    void on_icon_close_clicked();
+
+    void on_icon_mini_clicked();
+
+protected:
+     void paintEvent(QPaintEvent *event);
+     void mousePressEvent(QMouseEvent *event);
+
+     void mouseMoveEvent(QMouseEvent *event);
 //    void newConnect(); //连接服务器
 //    void readMessage();  //接收数据
 //void displayError(QAbstractSocket::SocketError);  //显示错误
@@ -37,8 +53,13 @@ private:
     Ui::MultiChatDlg *ui;
     QUdpSocket *socket;
 
+
     QStandardItemModel  *model;
     int numOfOnline;
+
+
+    QPoint dPos;
+    QPixmap bkg;
 
 //    QTcpSocket *tcpSocket;
 };
