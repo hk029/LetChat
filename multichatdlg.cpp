@@ -92,8 +92,9 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //    int row = tItem->row();
 
 //    model->removeRow(row);//移除
+    QString s = this->MakeMsg("1.1.1.1/my",ONLINE);
     qDebug()<<this->MakeMsg("1.1.1.1/my",ONLINE);
-
+    this->ResolveMsg(s);
 }
 
 MultiChatDlg::~MultiChatDlg()
@@ -123,6 +124,8 @@ QString MultiChatDlg::getIP()  //获取ip地址
 QString MultiChatDlg::MakeMsg(QString str,int type)
 {
     char header = 0x01;
+    QByteArray bytes;
+    bytes.append(header);
     QString ip,name;
     switch(type)
     {
@@ -133,7 +136,11 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         // |0x01|0x01|ip_len|ip_str|name_len|name|
         // |上线信息| ip长度(byte)|ip | name长度(byte) | name|
         //****************************************
-        str = header + 0x01 + char(ip.length()) + ip + char(name.length()) + name ;
+        bytes.append(0x01);
+        bytes.append(ip.length());
+        bytes.append(ip);
+        bytes.append(name.length());
+        bytes.append(name);
         break;
         case OFFLINE:
         //****************************************
@@ -142,14 +149,55 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         //****************************************
         ip = str.split('/').at(0);
         name = str.split('/').at(1);
-        str = header + 0x02 + char(ip.length()) + ip;
+        bytes.append(0x02);
+        bytes.append(ip.length());
+        bytes.append(ip);
         break;
         case TEXT:
+        //****************************************
+        // |0x01|0x03|str|
+        // |普通消息| str |
+        //****************************************
+        bytes.append(0x03);
+        bytes.append(str);
         break;
 
     }
-    return str;
+    return QString(bytes);
 }
+
+int MultiChatDlg::ResolveMsg(QString str)
+{
+    QByteArray bytes = str.toLatin1();
+    unsigned char header = bytes[0];
+    QString ip,name;
+    int len;
+    unsigned char type = bytes[1];
+    switch((int)type)
+    {
+        case ONLINE:
+        len = bytes[2];
+        //get ip
+        qDebug()<<len;
+        qDebug()<<bytes.mid(3,len);
+        break;
+
+        case OFFLINE:
+        qDebug()<<"OFFLINE";
+        break;
+
+        case TEXT:
+        qDebug()<<"TEXT";
+        break;
+    default:
+        qDebug()<<"de";
+        break;
+
+    }
+
+    return 1;
+}
+
 
 void MultiChatDlg::processPendingDatagram() //处理等待的数据报
 {

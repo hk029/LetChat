@@ -8,7 +8,7 @@
 
 #include "QPainter"
 enum MsgType{
-    ONLINE,
+    ONLINE=1,
     OFFLINE,
     TEXT
 };
@@ -27,6 +27,7 @@ public:
     bool setHostIP(QString);
     QString getIP();
     QString MakeMsg(QString str,int type);
+    int ResolveMsg(QString str);
 private slots:
     void processPendingDatagram();
 
