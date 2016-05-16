@@ -1,4 +1,5 @@
 #include <QtGui/QApplication>
+
 #include "multichatdlg.h"
 #include "maindlg.h"
 #include "QFontDatabase"

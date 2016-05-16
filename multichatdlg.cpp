@@ -229,4 +229,3 @@ void MultiChatDlg::on_icon_mini_clicked()
 {
     this->showMinimized();
 }
-
