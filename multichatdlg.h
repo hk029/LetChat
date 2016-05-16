@@ -4,7 +4,10 @@
 #include <QDialog>
 
 #include <QtNetwork>
+#include <QStandardItemModel>
+
 #include "QPainter"
+
 
 #define PORT 11223
 namespace Ui {
@@ -39,6 +42,8 @@ protected:
 
 void on_sendButton_clicked();
 
+void on_loginButton_clicked();
+
 private:
     int blockSize;
     QHostAddress *hostIP;
@@ -46,8 +51,15 @@ private:
     QString name;
     Ui::MultiChatDlg *ui;
     QUdpSocket *socket;
+
+
+    QStandardItemModel  *model;
+    int numOfOnline;
+
+
     QPoint dPos;
     QPixmap bkg;
+
 //    QTcpSocket *tcpSocket;
 };
 

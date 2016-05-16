@@ -1,6 +1,6 @@
 #include "multichatdlg.h"
 #include "ui_multichatdlg.h"
-
+//#include <QStandardItemModel>
 MultiChatDlg::MultiChatDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MultiChatDlg)
@@ -53,6 +53,46 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //    tcpSocket = new QTcpSocket(this);
 //    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
 //    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
+    numOfOnline = 0;
+
+    //new added
+    //1.添加表头
+    model = new QStandardItemModel();
+
+    model->setColumnCount(2);
+
+    model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Ip address"));
+
+    model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("name"));
+    //2.设置表格属性
+    ui->contactList->setModel(model);
+    //表头信息显示居左
+    ui->contactList->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    //设置列宽不可变
+    ui->contactList->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
+    ui->contactList->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
+    ui->contactList->setColumnWidth(0,101);
+    ui->contactList->setColumnWidth(1,102);
+    //3.添加行
+//    for(int i = 0; i<3; i++){
+//        model->setItem(i,0,new QStandardItem("11111"));
+//        //设置颜色
+//        model->item(i,0)->setForeground(QBrush(QColor(255,0,0)));
+//        //设置字符位置
+//        model->item(i,0)->setTextAlignment(Qt::AlignCenter);
+//        model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
+//    }
+
+
+    //4.删除制定行
+//    QList<QStandardItem *> tList = model->findItems ("11111");//指定的条件
+
+//    QStandardItem* tItem = tList.at(0);//按照第一列的值查找
+
+//    int row = tItem->row();
+
+//    model->removeRow(row);//移除
+
 
 }
 
@@ -87,13 +127,31 @@ void MultiChatDlg::processPendingDatagram() //处理等待的数据报
     {
 
        QByteArray datagram; //拥于存放接收的数据报
-//让datagram的大小为等待处理的数据报的大小，这样才能接收到完整的数据
+       //让datagram的大小为等待处理的数据报的大小，这样才能接收到完整的数据
        datagram.resize(socket->pendingDatagramSize());
        //接收数据报，将其存放到datagram中
        socket->readDatagram(datagram.data(),datagram.size());
        //将数据报内容显示出来
        ui->receiveMsg->append(datagram);
 //       ui->label->setText(datagram);
+
+
+       //在表格中添加登录状态
+       numOfOnline++;
+       model->setItem(numOfOnline,0,new QStandardItem("111"));
+       //设置颜色
+       model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
+       //设置字符位置
+       model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
+       model->setItem(numOfOnline,1,new QStandardItem(QString::fromLocal8Bit("haha")));
+//       for(int i = 0; i<3; i++){
+//           model->setItem(i,0,new QStandardItem("11111"));
+//           //设置颜色
+//           model->item(i,0)->setForeground(QBrush(QColor(255,0,0)));
+//           //设置字符位置
+//           model->item(i,0)->setTextAlignment(Qt::AlignCenter);
+//           model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
+//       }
     }
 }
 
@@ -149,6 +207,7 @@ void MultiChatDlg::on_sendButton_clicked()
     socket->writeDatagram(data,*hostIP,PORT);
     this->ui->sendMsg->clear();
 }
+
 
 void MultiChatDlg::on_icon_close_clicked()
 {
