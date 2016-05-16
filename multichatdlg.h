@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QtNetwork>
+#include <QStandardItemModel>
 
 #define PORT 11223
 namespace Ui {
@@ -26,6 +27,8 @@ private slots:
 
 void on_sendButton_clicked();
 
+void on_loginButton_clicked();
+
 private:
     int blockSize;
     QHostAddress *hostIP;
@@ -33,6 +36,10 @@ private:
     QString name;
     Ui::MultiChatDlg *ui;
     QUdpSocket *socket;
+
+    QStandardItemModel  *model;
+    int numOfOnline;
+
 //    QTcpSocket *tcpSocket;
 };
 

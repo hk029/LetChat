@@ -1,6 +1,6 @@
 #include <QtGui/QApplication>
-#include "widget.h"
-#include "multichat.h"
+
+
 #include "multichatdlg.h"
 int main(int argc, char *argv[])
 {
