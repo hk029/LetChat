@@ -5,5 +5,6 @@
         <file>img/bkg_main.png</file>
         <file>img/photo.png</file>
         <file>img/icon_mini.png</file>
+        <file>style/base.qss</file>
     </qresource>
 </RCC>

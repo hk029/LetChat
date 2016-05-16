@@ -1,6 +1,6 @@
 #include "maindlg.h"
 #include "ui_maindlg.h"
-
+#include "QDebug"
 MainDlg::MainDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MainDlg)
@@ -18,7 +18,6 @@ MainDlg::MainDlg(QWidget *parent) :
     this->ui->icon_close->setIcon(icon);
     icon.addPixmap(icon_mini);
     this->ui->icon_mini->setIcon(icon);
-
     //*********************Í·Ïñ*********************//
     QPixmap ph(":/img/photo.png");
     ph.scaled(500, 500).scaled(60,60, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -30,31 +29,13 @@ MainDlg::MainDlg(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->multidlg = new MultiChatDlg();
-    this->setStyleSheet("#photo{"
-                        "border:1px;"
-                        "}"
-                          "QLabel{"
-                          "color:#4a4a4a;"
-                           "}"
 
-                          "QPushButton{"
-                          "background-color:#3dce3d;color:white;"
-                          "border:0px;"
-                          "}"
-                          "QTextBrowser{"
-                          "color:red;"
-                          "}"
-                          "QToolButton{"
-                          "border:1px;"
-                          "}"
-
-                          "QToolButton:hover{"
-                          "background-color:#ff2200;"
-                          "}"
-                          "QPushButton:hover{"
-                          "background-color:#D35400;"
-                          "}"
-                          );
+    QFile qssfile(":/style/base.qss");
+    qssfile.open(QFile::ReadOnly);
+    QString qss;
+    qss = qssfile.readAll();
+    this->setStyleSheet(qss);
+    qDebug()<<qss;
 }
 
 MainDlg::~MainDlg()

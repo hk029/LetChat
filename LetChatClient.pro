@@ -24,3 +24,6 @@ FORMS    += \
 
 RESOURCES += \
     image.qrc
+
+OTHER_FILES += \
+    style/base.qss
