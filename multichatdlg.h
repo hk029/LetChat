@@ -7,7 +7,11 @@
 #include <QStandardItemModel>
 
 #include "QPainter"
-
+enum MsgType{
+    ONLINE,
+    OFFLINE,
+    TEXT
+};
 
 #define PORT 11223
 namespace Ui {
@@ -22,7 +26,7 @@ public:
     ~MultiChatDlg();
     bool setHostIP(QString);
     QString getIP();
-
+    QString MakeMsg(QString str,int type);
 private slots:
     void processPendingDatagram();
 
@@ -59,6 +63,7 @@ private:
 
     QPoint dPos;
     QPixmap bkg;
+
 
 //    QTcpSocket *tcpSocket;
 };

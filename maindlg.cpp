@@ -35,7 +35,7 @@ MainDlg::MainDlg(QWidget *parent) :
     QString qss;
     qss = qssfile.readAll();
     this->setStyleSheet(qss);
-    qDebug()<<qss;
+
 }
 
 MainDlg::~MainDlg()

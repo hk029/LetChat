@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
 //    {
 //        qDebug()<<family;
 //    }
-    MainDlg m;
-    //MultiChatDlg m;
+    MultiChatDlg m;
     m.show();
 //    Widget w;
 //    w.show();

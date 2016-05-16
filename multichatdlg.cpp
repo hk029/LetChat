@@ -92,7 +92,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //    int row = tItem->row();
 
 //    model->removeRow(row);//移除
-
+    qDebug()<<this->MakeMsg("1.1.1.1/my",ONLINE);
 
 }
 
@@ -119,6 +119,36 @@ QString MultiChatDlg::getIP()  //获取ip地址
            return address.toString();
     }
     return 0;
+}
+QString MultiChatDlg::MakeMsg(QString str,int type)
+{
+    char header = 0x01;
+    QString ip,name;
+    switch(type)
+    {
+        case ONLINE:
+        ip = str.split('/').at(0);
+        name = str.split('/').at(1);
+        //****************************************
+        // |0x01|0x01|ip_len|ip_str|name_len|name|
+        // |上线信息| ip长度(byte)|ip | name长度(byte) | name|
+        //****************************************
+        str = header + 0x01 + char(ip.length()) + ip + char(name.length()) + name ;
+        break;
+        case OFFLINE:
+        //****************************************
+        // |0x01|0x02|ip_len|ip_str|
+        // |下线信息| ip长度(byte)|ip |
+        //****************************************
+        ip = str.split('/').at(0);
+        name = str.split('/').at(1);
+        str = header + 0x02 + char(ip.length()) + ip;
+        break;
+        case TEXT:
+        break;
+
+    }
+    return str;
 }
 
 void MultiChatDlg::processPendingDatagram() //处理等待的数据报
