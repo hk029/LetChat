@@ -1,13 +1,14 @@
 #include "multichatdlg.h"
 #include "ui_multichatdlg.h"
 //#include <QStandardItemModel>
+#include <QMessageBox>
 MultiChatDlg::MultiChatDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MultiChatDlg)
 {
     ui->setupUi(this);
 
-    name = "haha";
+    name = "my";
     hostIP = new QHostAddress(QHostAddress::Broadcast);
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
@@ -201,8 +202,6 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         //***************************************************
         this->ui->receiveMsg->setTextColor("gray");
         this->ui->receiveMsg->append("["+name+"]"+" 上线了...");
-        if(this->getIP() != ip)
-            this->SendMsg(this->MakeMsg("",ONLINE),QHostAddress(ip));
         break;
 
         case OFFLINE:
@@ -231,6 +230,11 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         qDebug()<<lenName;
         name = bytes.mid(3,lenName);
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
+        //**********************判断输入为空，则弹出提示××××××××××××××××××××
+        if(msg.isEmpty()){
+            QMessageBox::warning(this, "错误", QString::fromLocal8Bit("发送的内容不能为空"));
+            break;
+        }
         if(name == this->name){
             this->ui->receiveMsg->setTextColor("red");
         }
