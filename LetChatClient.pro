@@ -16,7 +16,8 @@ SOURCES += main.cpp\
 
 HEADERS  += \
     multichatdlg.h \
-    maindlg.h
+    maindlg.h \
+    allsetting.h
 
 FORMS    += \
     multichatdlg.ui \

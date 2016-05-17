@@ -27,7 +27,11 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     icon.addPixmap(icon_mini);
     this->ui->icon_mini->setIcon(icon);
 
-
+    QFile qssfile(":/style/base.qss");
+    qssfile.open(QFile::ReadOnly);
+    QString qss;
+    qss = qssfile.readAll();
+    this->setStyleSheet(qss);
 
     this->setStyleSheet("QLabel{"
                         "color:#4a4a4a;"
@@ -84,21 +88,11 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //        model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
 //    }
 
-
-    //4.删除制定行
-//    QList<QStandardItem *> tList = model->findItems ("11111");//指定的条件
-
-//    QStandardItem* tItem = tList.at(0);//按照第一列的值查找
-
+    QString IP = this->getIP();
+    QString s = this->MakeMsg(IP+'/'+this->name,ONLINE);
+    this->SendMsg(s,QHostAddress::Broadcast);
 //    int row = tItem->row();
 
-//    model->removeRow(row);//移除
-    //************************************************************
-    QString s = this->MakeMsg("1.1.1.1/my",ONLINE);
-    QString s2 = this->MakeMsg("1.1.1.1/my",OFFLINE);
-    qDebug()<<this->MakeMsg("1.1.1.1/my",ONLINE);
-    this->ResolveMsg(s);
-    this->ResolveMsg(s2);
 }
 
 MultiChatDlg::~MultiChatDlg()
@@ -130,12 +124,10 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
     char header = 0x01;
     QByteArray bytes;
     bytes.append(header);
-    QString ip,name;
+    QString ip = this->getIP();
     switch(type)
     {
         case ONLINE:
-        ip = str.split('/').at(0);
-        name = str.split('/').at(1);
         //****************************************
         // |0x01|0x01|ip_len|ip_str|name_len|name|
         // |上线信息| ip长度(byte)|ip | name长度(byte) | name|
@@ -143,39 +135,39 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         bytes.append(0x01);
         bytes.append(ip.length());
         bytes.append(ip);
-        bytes.append(name.length());
-        bytes.append(name);
+        bytes.append(this->name.length());
+        bytes.append(this->name);
         break;
         case OFFLINE:
         //****************************************
-        // |0x01|0x02|ip_len|ip_str|
-        // |下线信息| ip长度(byte)|ip |
+        // |0x01|0x02|ip_len|ip_str|name_len|name|
+        // |下线信息| ip长度(byte)|ip | name长度(byte) | name|
         //****************************************
-        ip = str.split('/').at(0);
-        name = str.split('/').at(1);
         bytes.append(0x02);
         bytes.append(ip.length());
         bytes.append(ip);
+        bytes.append(name.length());
+        bytes.append(name);
         break;
         case TEXT:
         //****************************************
-        // |0x01|0x03|str|
-        // |普通消息| str |
+        // |0x01|0x03|name_len|name|str|
+        // |普通消息| name长度 | name| str|
         //****************************************
         bytes.append(0x03);
+        bytes.append(this->name.length());
+        bytes.append(this->name);
         bytes.append(str);
         break;
 
     }
-
     return QString(bytes);
 }
 
-int MultiChatDlg::ResolveMsg(QString str)
+int MultiChatDlg::ResolveMsg(QByteArray bytes)
 {
-
-    QByteArray bytes = str.toLatin1();
     unsigned char header = bytes[0];
+
     QString ip,name;
     int len;
     unsigned char type = bytes[1];
@@ -258,18 +250,20 @@ void MultiChatDlg::processPendingDatagram() //处理等待的数据报
        //接收数据报，将其存放到datagram中
        socket->readDatagram(datagram.data(),datagram.size());
        //将数据报内容显示出来
-       ui->receiveMsg->append(datagram);
+       this->ResolveMsg(datagram);
+//       ui->receiveMsg->append(datagram);
 //       ui->label->setText(datagram);
 
 
-       //在表格中添加登录状态
-       numOfOnline++;
-       model->setItem(numOfOnline,0,new QStandardItem("111"));
-       //设置颜色
-       model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
-       //设置字符位置
-       model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
-       model->setItem(numOfOnline,1,new QStandardItem(QString::fromLocal8Bit("haha")));
+//       //在表格中添加登录状态
+//       numOfOnline++;
+//       model->setItem(numOfOnline,0,new QStandardItem("111"));
+//       //设置颜色
+//       model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
+//       //设置字符位置
+//       model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
+//       model->setItem(numOfOnline,1,new QStandardItem(QString::fromLocal8Bit("haha")));
+
 //       for(int i = 0; i<3; i++){
 //           model->setItem(i,0,new QStandardItem("11111"));
 //           //设置颜色
@@ -326,14 +320,20 @@ void MultiChatDlg::processPendingDatagram() //处理等待的数据报
 
 void MultiChatDlg::on_sendButton_clicked()
 {
+
     QString str =  this->ui->sendMsg->toPlainText();
-    str = name+":"+str;
-    QByteArray data = str.toAscii();
-    this->ui->receiveMsg->append(str);
-    socket->writeDatagram(data,*hostIP,PORT);
-    this->ui->sendMsg->clear();
+    str = this->MakeMsg(str,TEXT);
+    qDebug()<<str;
+    this->ResolveMsg(str.toLatin1());
+    this->SendMsg(str,QHostAddress::Broadcast);
 }
 
+int MultiChatDlg::SendMsg(QString str,QHostAddress host)
+{
+    QByteArray data = str.toAscii();
+    socket->writeDatagram(data,host,PORT);
+    this->ui->sendMsg->clear();
+}
 
 void MultiChatDlg::on_icon_close_clicked()
 {

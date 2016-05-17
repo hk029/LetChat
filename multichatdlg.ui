@@ -98,10 +98,6 @@
   <widget class="QToolButton" name="icon_mini">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>320</y>
-     <width>75</width>
-     <height>23</height>
      <x>475</x>
      <y>10</y>
      <width>35</width>

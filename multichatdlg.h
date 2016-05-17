@@ -3,17 +3,9 @@
 
 #include <QDialog>
 
-#include <QtNetwork>
-#include <QStandardItemModel>
+#include "allsetting.h"
 
-#include "QPainter"
-enum MsgType{
-    ONLINE=1,
-    OFFLINE,
-    TEXT
-};
 
-#define PORT 11223
 namespace Ui {
 class MultiChatDlg;
 }
@@ -27,7 +19,8 @@ public:
     bool setHostIP(QString);
     QString getIP();
     QString MakeMsg(QString str,int type);
-    int ResolveMsg(QString str);
+    int ResolveMsg(QByteArray bytes);
+    int SendMsg(QString str,QHostAddress host);
 private slots:
     void processPendingDatagram();
 
@@ -35,6 +28,8 @@ private slots:
 
     void on_icon_mini_clicked();
 
+    void on_pushButton_clicked();
+    void on_sendButton_clicked();
 protected:
      void paintEvent(QPaintEvent *event);
      void mousePressEvent(QMouseEvent *event);
@@ -45,9 +40,9 @@ protected:
 //void displayError(QAbstractSocket::SocketError);  //œ‘ æ¥ÌŒÛ
 
 
-void on_sendButton_clicked();
 
-void on_loginButton_clicked();
+
+
 
 private:
     int blockSize;
@@ -70,3 +65,5 @@ private:
 };
 
 #endif // MULTICHATDLG_H
+
+

@@ -22,12 +22,12 @@ QToolButton{
     border:1px;
 }
 
-QToolButton:hover {
+QToolButton:hover{
     background-color:#ff2200;
 }
-QPushButton:hover {
+QPushButton:hover{
     background-color:#D35400;
 }
-QPushButton:active {
+QPushButton:active{
     background-color:#3dce3d;
 }

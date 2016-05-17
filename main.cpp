@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
 
     QTextCodec::setCodecForTr(codec);
 
-    QTextCodec::setCodecForLocale(codec);
-    QTextCodec::setCodecForCStrings(codec);
+    QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
 //    QFontDatabase database;
 //    foreach (const QString &family, database.families())
 //    {

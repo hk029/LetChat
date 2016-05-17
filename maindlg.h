@@ -3,11 +3,9 @@
 
 #include <QDialog>
 
-#include <QtNetwork>
-#include "QPainter"
-#include <multichatdlg.h>
-#include <QMouseEvent>
-#define PORT 11223
+
+#include "allsetting.h"
+
 
 namespace Ui {
 class MainDlg;
