@@ -7,7 +7,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    name = "my";
+    name = "haha";
     hostIP = new QHostAddress(QHostAddress::Broadcast);
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
@@ -201,6 +201,8 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         //***************************************************
         this->ui->receiveMsg->setTextColor("gray");
         this->ui->receiveMsg->append("["+name+"]"+" ÉÏÏßÁË...");
+        if(this->getIP() != ip)
+            this->SendMsg(this->MakeMsg("",ONLINE),QHostAddress(ip));
         break;
 
         case OFFLINE:
