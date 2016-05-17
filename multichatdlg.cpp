@@ -158,6 +158,7 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         bytes.append(this->name.length());
         bytes.append(this->name);
         bytes.append(str);
+        qDebug()<<bytes;
         break;
 
     }
@@ -168,8 +169,8 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
 {
     unsigned char header = bytes[0];
 
-    QString ip,name;
-    int len;
+    QString ip,name,msg;
+    int len,lenName;
     unsigned char type = bytes[1];
     //*****chengcheng*****
     int nameStartIndex = 0;
@@ -183,19 +184,12 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         case ONLINE:
         len = bytes[2];
         //get ip
-        qDebug()<<len;
-        qDebug()<<bytes.mid(3,len);
-
-
         //*************chengcheng************
         len = bytes[2];
         ip = bytes.mid(3,len);
         nameStartIndex = 2+len+1+1;
         len = bytes[2+len+1];
-
         name = bytes.mid(nameStartIndex,len);
-        qDebug()<<"****ip****"<<ip;
-        qDebug()<<"****name****"<<name;
         //在表格中添加登录状态
         numOfOnline++;
         model->setItem(numOfOnline,0,new QStandardItem(ip));
@@ -205,10 +199,11 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
         model->setItem(numOfOnline,1,new QStandardItem(name));
         //***************************************************
+        this->ui->receiveMsg->setTextColor("gray");
+        this->ui->receiveMsg->append("["+name+"]"+" 上线了...");
         break;
 
         case OFFLINE:
-        qDebug()<<"OFFLINE";
         //************************chengcheng*********************************
         len = bytes[2];
         ip = bytes.mid(3,len);
@@ -224,10 +219,23 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
 
         model->removeRow(row);//移除
         //*******************************************************************
+        this->ui->receiveMsg->setTextColor("gray");
+        this->ui->receiveMsg->append("["+name+"]"+" 下线了...");
         break;
 
         case TEXT:
         qDebug()<<"TEXT";
+        lenName = bytes[2];
+        qDebug()<<lenName;
+        name = bytes.mid(3,lenName);
+        msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
+        if(name == this->name){
+            this->ui->receiveMsg->setTextColor("red");
+        }
+        else{
+            this->ui->receiveMsg->setTextColor("blue");
+        }
+        this->ui->receiveMsg->append(name+":\n"+msg);
         break;
     default:
         qDebug()<<"de";
@@ -323,8 +331,6 @@ void MultiChatDlg::on_sendButton_clicked()
 
     QString str =  this->ui->sendMsg->toPlainText();
     str = this->MakeMsg(str,TEXT);
-    qDebug()<<str;
-    this->ResolveMsg(str.toLatin1());
     this->SendMsg(str,QHostAddress::Broadcast);
 }
 
