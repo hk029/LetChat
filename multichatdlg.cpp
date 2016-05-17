@@ -53,9 +53,10 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //    tcpSocket = new QTcpSocket(this);
 //    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
 //    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
-    numOfOnline = 0;
+    numOfOnline = -1;
 
-    //new added
+
+    //******************chengcheng******************************
     //1.添加表头
     model = new QStandardItemModel();
 
@@ -71,8 +72,8 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     //设置列宽不可变
     ui->contactList->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
     ui->contactList->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
-    ui->contactList->setColumnWidth(0,101);
-    ui->contactList->setColumnWidth(1,102);
+    ui->contactList->setColumnWidth(0,68);
+    ui->contactList->setColumnWidth(1,66);
     //3.添加行
 //    for(int i = 0; i<3; i++){
 //        model->setItem(i,0,new QStandardItem("11111"));
@@ -92,9 +93,12 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //    int row = tItem->row();
 
 //    model->removeRow(row);//移除
+    //************************************************************
     QString s = this->MakeMsg("1.1.1.1/my",ONLINE);
+    QString s2 = this->MakeMsg("1.1.1.1/my",OFFLINE);
     qDebug()<<this->MakeMsg("1.1.1.1/my",ONLINE);
     this->ResolveMsg(s);
+    this->ResolveMsg(s2);
 }
 
 MultiChatDlg::~MultiChatDlg()
@@ -163,16 +167,25 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         break;
 
     }
+
     return QString(bytes);
 }
 
 int MultiChatDlg::ResolveMsg(QString str)
 {
+
     QByteArray bytes = str.toLatin1();
     unsigned char header = bytes[0];
     QString ip,name;
     int len;
     unsigned char type = bytes[1];
+    //*****chengcheng*****
+    int nameStartIndex = 0;
+    QList<QStandardItem *> tList ;
+    QStandardItem* tItem ;
+    int row;
+    //********************
+
     switch((int)type)
     {
         case ONLINE:
@@ -180,10 +193,45 @@ int MultiChatDlg::ResolveMsg(QString str)
         //get ip
         qDebug()<<len;
         qDebug()<<bytes.mid(3,len);
+
+
+        //*************chengcheng************
+        len = bytes[2];
+        ip = bytes.mid(3,len);
+        nameStartIndex = 2+len+1+1;
+        len = bytes[2+len+1];
+
+        name = bytes.mid(nameStartIndex,len);
+        qDebug()<<"****ip****"<<ip;
+        qDebug()<<"****name****"<<name;
+        //在表格中添加登录状态
+        numOfOnline++;
+        model->setItem(numOfOnline,0,new QStandardItem(ip));
+        //设置颜色
+        model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
+        //设置字符位置
+        model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(numOfOnline,1,new QStandardItem(name));
+        //***************************************************
         break;
 
         case OFFLINE:
         qDebug()<<"OFFLINE";
+        //************************chengcheng*********************************
+        len = bytes[2];
+        ip = bytes.mid(3,len);
+        nameStartIndex = 2+len+1+1;
+        len = bytes[2+len+1];
+
+        name = bytes.mid(nameStartIndex,len);
+        tList = model->findItems(ip);//指定的条件
+
+        tItem = tList.at(0);//按照第一列的值查找
+
+        row = tItem->row();
+
+        model->removeRow(row);//移除
+        //*******************************************************************
         break;
 
         case TEXT:
