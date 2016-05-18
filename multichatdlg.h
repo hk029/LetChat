@@ -27,8 +27,6 @@ private slots:
     void on_icon_close_clicked();
 
     void on_icon_mini_clicked();
-
-    void on_pushButton_clicked();
     void on_sendButton_clicked();
 protected:
      void paintEvent(QPaintEvent *event);
