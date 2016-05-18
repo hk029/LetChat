@@ -2,6 +2,7 @@
 #include "ui_multichatdlg.h"
 //#include <QStandardItemModel>
 #include <QMessageBox>
+#include <QDateTime>
 MultiChatDlg::MultiChatDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::MultiChatDlg)
@@ -178,8 +179,12 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
     QList<QStandardItem *> tList ;
     QStandardItem* tItem ;
     int row;
-    //********************
-
+    //********************添加变量×××××××××××××××××××
+    //QDateTime time;
+    //QString reTime;
+    QDateTime time = QDateTime::currentDateTime();//获取系统现在的时间
+    QString reTime = time.toString("hh:mm"); //设置显示格式
+    qDebug()<<reTime;
     switch((int)type)
     {
         case ONLINE:
@@ -201,7 +206,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         model->setItem(numOfOnline,1,new QStandardItem(name));
         //***************************************************
         this->ui->receiveMsg->setTextColor("gray");
-        this->ui->receiveMsg->append("["+name+"]"+" 上线了...");
+        this->ui->receiveMsg->append("["+name+"] "+reTime+" 上线了...");
         break;
 
         case OFFLINE:
@@ -221,7 +226,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         model->removeRow(row);//移除
         //*******************************************************************
         this->ui->receiveMsg->setTextColor("gray");
-        this->ui->receiveMsg->append("["+name+"]"+" 下线了...");
+        this->ui->receiveMsg->append("["+name+"] " + reTime+" 下线了...");
         break;
 
         case TEXT:
@@ -232,7 +237,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
         //**********************判断输入为空，则弹出提示××××××××××××××××××××
         if(msg.isEmpty()){
-            QMessageBox::warning(this, "错误", QString::fromLocal8Bit("发送的内容不能为空"));
+            QMessageBox::warning(this, "错误", QString::fromLocal8Bit("发送的内容不能为空"), "好的");
             break;
         }
         if(name == this->name){
@@ -241,7 +246,11 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         else{
             this->ui->receiveMsg->setTextColor("blue");
         }
-        this->ui->receiveMsg->append(name+":\n"+msg);
+        //********************
+        //time = QDateTime::currentDateTime();//获取系统现在的时间
+        //reTime = time.toString("hh:mm"); //设置显示格式
+        qDebug()<<reTime;
+        this->ui->receiveMsg->append(name+" "+reTime+":\n"+msg);
         break;
     default:
         qDebug()<<"de";
