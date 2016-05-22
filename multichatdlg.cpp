@@ -18,7 +18,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     this->setAttribute(Qt::WA_TranslucentBackground);
 
     bkg.load(":/img/bkg.png");
-     //*********************±êÌâÀ¸*********************//
+     //*********************æ ‡é¢˜æ *********************//
     QIcon icon;
     QPixmap icon_close(":/img/icon_close.png");
     QPixmap icon_mini(":/img/icon_mini.png");
@@ -63,7 +63,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 
 
     //******************chengcheng******************************
-    //1.Ìí¼Ó±íÍ·
+    //1.æ·»åŠ è¡¨å¤´
     model = new QStandardItemModel();
 
     model->setColumnCount(2);
@@ -71,21 +71,21 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     model->setHeaderData(0,Qt::Horizontal,QString::fromLocal8Bit("Ip address"));
 
     model->setHeaderData(1,Qt::Horizontal,QString::fromLocal8Bit("name"));
-    //2.ÉèÖÃ±í¸ñÊôĞÔ
+    //2.è®¾ç½®è¡¨æ ¼å±æ€§
     ui->contactList->setModel(model);
-    //±íÍ·ĞÅÏ¢ÏÔÊ¾¾Ó×ó
+    //è¡¨å¤´ä¿¡æ¯æ˜¾ç¤ºå±…å·¦
     ui->contactList->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    //ÉèÖÃÁĞ¿í²»¿É±ä
+    //è®¾ç½®åˆ—å®½ä¸å¯å˜
     ui->contactList->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
     ui->contactList->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
     ui->contactList->setColumnWidth(0,68);
     ui->contactList->setColumnWidth(1,66);
-    //3.Ìí¼ÓĞĞ
+    //3.æ·»åŠ è¡Œ
 //    for(int i = 0; i<3; i++){
 //        model->setItem(i,0,new QStandardItem("11111"));
-//        //ÉèÖÃÑÕÉ«
+//        //è®¾ç½®é¢œè‰²
 //        model->item(i,0)->setForeground(QBrush(QColor(255,0,0)));
-//        //ÉèÖÃ×Ö·ûÎ»ÖÃ
+//        //è®¾ç½®å­—ç¬¦ä½ç½®
 //        model->item(i,0)->setTextAlignment(Qt::AlignCenter);
 //        model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
 //    }
@@ -106,16 +106,16 @@ MultiChatDlg::~MultiChatDlg()
 void MultiChatDlg::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.drawPixmap(0,0,bkg.scaled(this->size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)); // »æÖÆ²»¹æÔò±³¾°
+    painter.drawPixmap(0,0,bkg.scaled(this->size(),Qt::IgnoreAspectRatio,Qt::SmoothTransformation)); // ç»˜åˆ¶ä¸è§„åˆ™èƒŒæ™¯
 
 }
 
-QString MultiChatDlg::getIP()  //»ñÈ¡ipµØÖ·
+QString MultiChatDlg::getIP()  //è·å–ipåœ°å€
 {
     QList<QHostAddress> list = QNetworkInterface::allAddresses();
     foreach (QHostAddress address, list)
     {
-       //ÎÒÃÇÊ¹ÓÃIPv4µØÖ·
+       //æˆ‘ä»¬ä½¿ç”¨IPv4åœ°å€
        if(address.protocol() == QAbstractSocket::IPv4Protocol)
            return address.toString();
     }
@@ -132,7 +132,7 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         case ONLINE:
         //****************************************
         // |0x01|0x01|ip_len|ip_str|name_len|name|
-        // |ÉÏÏßĞÅÏ¢| ip³¤¶È(byte)|ip | name³¤¶È(byte) | name|
+        // |ä¸Šçº¿ä¿¡æ¯| ipé•¿åº¦(byte)|ip | nameé•¿åº¦(byte) | name|
         //****************************************
         bytes.append(0x01);
         bytes.append(ip.length());
@@ -143,7 +143,7 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         case OFFLINE:
         //****************************************
         // |0x01|0x02|ip_len|ip_str|name_len|name|
-        // |ÏÂÏßĞÅÏ¢| ip³¤¶È(byte)|ip | name³¤¶È(byte) | name|
+        // |ä¸‹çº¿ä¿¡æ¯| ipé•¿åº¦(byte)|ip | nameé•¿åº¦(byte) | name|
         //****************************************
         bytes.append(0x02);
         bytes.append(ip.length());
@@ -154,7 +154,7 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         case TEXT:
         //****************************************
         // |0x01|0x03|name_len|name|str|
-        // |ÆÕÍ¨ÏûÏ¢| name³¤¶È | name| str|
+        // |æ™®é€šæ¶ˆæ¯| nameé•¿åº¦ | name| str|
         //****************************************
         bytes.append(0x03);
         bytes.append(this->name.length());
@@ -179,11 +179,11 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
     QList<QStandardItem *> tList ;
     QStandardItem* tItem ;
     int row;
-    //********************Ìí¼Ó±äÁ¿¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á
+    //********************æ·»åŠ å˜é‡Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—
     //QDateTime time;
     //QString reTime;
-    QDateTime time = QDateTime::currentDateTime();//»ñÈ¡ÏµÍ³ÏÖÔÚµÄÊ±¼ä
-    QString reTime = time.toString("hh:mm"); //ÉèÖÃÏÔÊ¾¸ñÊ½
+    QDateTime time = QDateTime::currentDateTime();//è·å–ç³»ç»Ÿç°åœ¨çš„æ—¶é—´
+    QString reTime = time.toString("hh:mm"); //è®¾ç½®æ˜¾ç¤ºæ ¼å¼
     qDebug()<<reTime;
     switch((int)type)
     {
@@ -196,17 +196,17 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         nameStartIndex = 2+len+1+1;
         len = bytes[2+len+1];
         name = bytes.mid(nameStartIndex,len);
-        //ÔÚ±í¸ñÖĞÌí¼ÓµÇÂ¼×´Ì¬
+        //åœ¨è¡¨æ ¼ä¸­æ·»åŠ ç™»å½•çŠ¶æ€
         numOfOnline++;
         model->setItem(numOfOnline,0,new QStandardItem(ip));
-        //ÉèÖÃÑÕÉ«
+        //è®¾ç½®é¢œè‰²
         model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
-        //ÉèÖÃ×Ö·ûÎ»ÖÃ
+        //è®¾ç½®å­—ç¬¦ä½ç½®
         model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
         model->setItem(numOfOnline,1,new QStandardItem(name));
         //***************************************************
         this->ui->receiveMsg->setTextColor("gray");
-        this->ui->receiveMsg->append("["+name+"] "+reTime+" ÉÏÏßÁË...");
+        this->ui->receiveMsg->append("["+name+"] "+reTime+" ä¸Šçº¿äº†...");
         break;
 
         case OFFLINE:
@@ -217,16 +217,16 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         len = bytes[2+len+1];
 
         name = bytes.mid(nameStartIndex,len);
-        tList = model->findItems(ip);//Ö¸¶¨µÄÌõ¼ş
+        tList = model->findItems(ip);//æŒ‡å®šçš„æ¡ä»¶
 
-        tItem = tList.at(0);//°´ÕÕµÚÒ»ÁĞµÄÖµ²éÕÒ
+        tItem = tList.at(0);//æŒ‰ç…§ç¬¬ä¸€åˆ—çš„å€¼æŸ¥æ‰¾
 
         row = tItem->row();
 
-        model->removeRow(row);//ÒÆ³ı
+        model->removeRow(row);//ç§»é™¤
         //*******************************************************************
         this->ui->receiveMsg->setTextColor("gray");
-        this->ui->receiveMsg->append("["+name+"] " + reTime+" ÏÂÏßÁË...");
+        this->ui->receiveMsg->append("["+name+"] " + reTime+" ä¸‹çº¿äº†...");
         break;
 
         case TEXT:
@@ -235,9 +235,9 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         qDebug()<<lenName;
         name = bytes.mid(3,lenName);
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
-        //**********************ÅĞ¶ÏÊäÈëÎª¿Õ£¬Ôòµ¯³öÌáÊ¾¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á¡Á
+        //**********************åˆ¤æ–­è¾“å…¥ä¸ºç©ºï¼Œåˆ™å¼¹å‡ºæç¤ºÃ—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—Ã—
         if(msg.isEmpty()){
-            QMessageBox::warning(this, "´íÎó", QString::fromLocal8Bit("·¢ËÍµÄÄÚÈİ²»ÄÜÎª¿Õ"), "ºÃµÄ");
+            QMessageBox::warning(this, "é”™è¯¯", QString::fromLocal8Bit("å‘é€çš„å†…å®¹ä¸èƒ½ä¸ºç©º"), "å¥½çš„");
             break;
         }
         if(name == this->name){
@@ -247,10 +247,10 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
             this->ui->receiveMsg->setTextColor("blue");
         }
         //********************
-        //time = QDateTime::currentDateTime();//»ñÈ¡ÏµÍ³ÏÖÔÚµÄÊ±¼ä
-        //reTime = time.toString("hh:mm"); //ÉèÖÃÏÔÊ¾¸ñÊ½
+        //time = QDateTime::currentDateTime();//è·å–ç³»ç»Ÿç°åœ¨çš„æ—¶é—´
+        //reTime = time.toString("hh:mm"); //è®¾ç½®æ˜¾ç¤ºæ ¼å¼
         qDebug()<<reTime;
-        this->ui->receiveMsg->append(name+" "+reTime+":\n"+msg);
+        this->ui->receiveMsg->append(reTime+" "+name+":\n"+msg);
         break;
     default:
         qDebug()<<"de";
@@ -262,36 +262,36 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
 }
 
 
-void MultiChatDlg::processPendingDatagram() //´¦ÀíµÈ´ıµÄÊı¾İ±¨
+void MultiChatDlg::processPendingDatagram() //å¤„ç†ç­‰å¾…çš„æ•°æ®æŠ¥
 {
-    while(socket->hasPendingDatagrams())  //ÓµÓĞµÈ´ıµÄÊı¾İ±¨
+    while(socket->hasPendingDatagrams())  //æ‹¥æœ‰ç­‰å¾…çš„æ•°æ®æŠ¥
     {
 
-       QByteArray datagram; //ÓµÓÚ´æ·Å½ÓÊÕµÄÊı¾İ±¨
-       //ÈÃdatagramµÄ´óĞ¡ÎªµÈ´ı´¦ÀíµÄÊı¾İ±¨µÄ´óĞ¡£¬ÕâÑù²ÅÄÜ½ÓÊÕµ½ÍêÕûµÄÊı¾İ
+       QByteArray datagram; //æ‹¥äºå­˜æ”¾æ¥æ”¶çš„æ•°æ®æŠ¥
+       //è®©datagramçš„å¤§å°ä¸ºç­‰å¾…å¤„ç†çš„æ•°æ®æŠ¥çš„å¤§å°ï¼Œè¿™æ ·æ‰èƒ½æ¥æ”¶åˆ°å®Œæ•´çš„æ•°æ®
        datagram.resize(socket->pendingDatagramSize());
-       //½ÓÊÕÊı¾İ±¨£¬½«Æä´æ·Åµ½datagramÖĞ
+       //æ¥æ”¶æ•°æ®æŠ¥ï¼Œå°†å…¶å­˜æ”¾åˆ°datagramä¸­
        socket->readDatagram(datagram.data(),datagram.size());
-       //½«Êı¾İ±¨ÄÚÈİÏÔÊ¾³öÀ´
+       //å°†æ•°æ®æŠ¥å†…å®¹æ˜¾ç¤ºå‡ºæ¥
        this->ResolveMsg(datagram);
 //       ui->receiveMsg->append(datagram);
 //       ui->label->setText(datagram);
 
 
-//       //ÔÚ±í¸ñÖĞÌí¼ÓµÇÂ¼×´Ì¬
+//       //åœ¨è¡¨æ ¼ä¸­æ·»åŠ ç™»å½•çŠ¶æ€
 //       numOfOnline++;
 //       model->setItem(numOfOnline,0,new QStandardItem("111"));
-//       //ÉèÖÃÑÕÉ«
+//       //è®¾ç½®é¢œè‰²
 //       model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
-//       //ÉèÖÃ×Ö·ûÎ»ÖÃ
+//       //è®¾ç½®å­—ç¬¦ä½ç½®
 //       model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
 //       model->setItem(numOfOnline,1,new QStandardItem(QString::fromLocal8Bit("haha")));
 
 //       for(int i = 0; i<3; i++){
 //           model->setItem(i,0,new QStandardItem("11111"));
-//           //ÉèÖÃÑÕÉ«
+//           //è®¾ç½®é¢œè‰²
 //           model->item(i,0)->setForeground(QBrush(QColor(255,0,0)));
-//           //ÉèÖÃ×Ö·ûÎ»ÖÃ
+//           //è®¾ç½®å­—ç¬¦ä½ç½®
 //           model->item(i,0)->setTextAlignment(Qt::AlignCenter);
 //           model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
 //       }
@@ -307,17 +307,17 @@ void MultiChatDlg::processPendingDatagram() //´¦ÀíµÈ´ıµÄÊı¾İ±¨
 
 //void Widget::newConnect()
 //{
-//    blockSize = 0; //³õÊ¼»¯ÆäÎª0
-//    tcpSocket->abort(); //È¡ÏûÒÑÓĞµÄÁ¬½Ó
+//    blockSize = 0; //åˆå§‹åŒ–å…¶ä¸º0
+//    tcpSocket->abort(); //å–æ¶ˆå·²æœ‰çš„è¿æ¥
 
-////Á¬½Óµ½Ö÷»ú£¬ÕâÀï´Ó½çÃæ»ñÈ¡Ö÷»úµØÖ·ºÍ¶Ë¿ÚºÅ
+////è¿æ¥åˆ°ä¸»æœºï¼Œè¿™é‡Œä»ç•Œé¢è·å–ä¸»æœºåœ°å€å’Œç«¯å£å·
 ////    tcpSocket->connectToHost(ui->hostLineEdit->text(),
 ////                             ui->portLineEdit->text().toInt());
 //}
 
 //void Widget::displayError(QAbstractSocket::SocketError)
 //{
-//    qDebug() << tcpSocket->errorString(); //Êä³ö´íÎóĞÅÏ¢
+//    qDebug() << tcpSocket->errorString(); //è¾“å‡ºé”™è¯¯ä¿¡æ¯
 //}
 
 //void Widget::readMessage()
@@ -325,20 +325,20 @@ void MultiChatDlg::processPendingDatagram() //´¦ÀíµÈ´ıµÄÊı¾İ±¨
 //    QString message;
 //    QDataStream in(tcpSocket);
 //    in.setVersion(QDataStream::Qt_4_8);
-//    //ÉèÖÃÊı¾İÁ÷°æ±¾£¬ÕâÀïÒªºÍ·şÎñÆ÷¶ËÏàÍ¬
-//    if(blockSize==0) //Èç¹ûÊÇ¸Õ¿ªÊ¼½ÓÊÕÊı¾İ
+//    //è®¾ç½®æ•°æ®æµç‰ˆæœ¬ï¼Œè¿™é‡Œè¦å’ŒæœåŠ¡å™¨ç«¯ç›¸åŒ
+//    if(blockSize==0) //å¦‚æœæ˜¯åˆšå¼€å§‹æ¥æ”¶æ•°æ®
 //    {
-//       //ÅĞ¶Ï½ÓÊÕµÄÊı¾İÊÇ·ñÓĞÁ½×Ö½Ú£¬Ò²¾ÍÊÇÎÄ¼şµÄ´óĞ¡ĞÅÏ¢
-//       //Èç¹ûÓĞÔò±£´æµ½blockSize±äÁ¿ÖĞ£¬Ã»ÓĞÔò·µ»Ø£¬¼ÌĞø½ÓÊÕÊı¾İ
+//       //åˆ¤æ–­æ¥æ”¶çš„æ•°æ®æ˜¯å¦æœ‰ä¸¤å­—èŠ‚ï¼Œä¹Ÿå°±æ˜¯æ–‡ä»¶çš„å¤§å°ä¿¡æ¯
+//       //å¦‚æœæœ‰åˆ™ä¿å­˜åˆ°blockSizeå˜é‡ä¸­ï¼Œæ²¡æœ‰åˆ™è¿”å›ï¼Œç»§ç»­æ¥æ”¶æ•°æ®
 //       if(tcpSocket->bytesAvailable() < (int)sizeof(quint16)) return;
 //       in >> blockSize;
 //    }
 //    if(tcpSocket->bytesAvailable() < blockSize) return;
-//    //Èç¹ûÃ»ÓĞµÃµ½È«²¿µÄÊı¾İ£¬Ôò·µ»Ø£¬¼ÌĞø½ÓÊÕÊı¾İ
+//    //å¦‚æœæ²¡æœ‰å¾—åˆ°å…¨éƒ¨çš„æ•°æ®ï¼Œåˆ™è¿”å›ï¼Œç»§ç»­æ¥æ”¶æ•°æ®
 //    in >> message;
-//    //½«½ÓÊÕµ½µÄÊı¾İ´æ·Åµ½±äÁ¿ÖĞ
+//    //å°†æ¥æ”¶åˆ°çš„æ•°æ®å­˜æ”¾åˆ°å˜é‡ä¸­
 //    ui->textBrowser->setText(message);
-//    //ÏÔÊ¾½ÓÊÕµ½µÄÊı¾İ
+//    //æ˜¾ç¤ºæ¥æ”¶åˆ°çš„æ•°æ®
 //}
 
 void MultiChatDlg::on_sendButton_clicked()
