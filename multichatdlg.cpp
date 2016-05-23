@@ -7,7 +7,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    name = "haha";
+    name = "hk";
     hostIP = new QHostAddress(QHostAddress::Broadcast);
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
@@ -76,8 +76,8 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     //设置列宽不可变
     ui->contactList->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
     ui->contactList->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
-    ui->contactList->setColumnWidth(0,68);
-    ui->contactList->setColumnWidth(1,66);
+    ui->contactList->setColumnWidth(0,150);
+    ui->contactList->setColumnWidth(1,100);
     //3.添加行
 //    for(int i = 0; i<3; i++){
 //        model->setItem(i,0,new QStandardItem("11111"));
@@ -108,14 +108,17 @@ void MultiChatDlg::paintEvent(QPaintEvent *event)
 
 }
 
-QString MultiChatDlg::getIP()  //获取ip地址
+QString MultiChatDlg::   getIP()  //获取ip地址
 {
     QList<QHostAddress> list = QNetworkInterface::allAddresses();
+    QString curip;
     foreach (QHostAddress address, list)
     {
        //我们使用IPv4地址
        if(address.protocol() == QAbstractSocket::IPv4Protocol)
-           return address.toString();
+            curip =  address.toString();
+       if(curip.startsWith("192.168.0") ||curip.startsWith("172")||curip.startsWith("10") )
+           return curip;
     }
     return 0;
 }
@@ -176,7 +179,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
     int nameStartIndex = 0;
     QList<QStandardItem *> tList ;
     QStandardItem* tItem ;
-    int row;
+    int row,rows;
     //********************
 
     switch((int)type)
@@ -192,16 +195,18 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         name = bytes.mid(nameStartIndex,len);
         //在表格中添加登录状态
         numOfOnline++;
-        model->setItem(numOfOnline,0,new QStandardItem(ip));
+        model->appendRow(new QStandardItem(ip));
+        rows= model->rowCount();
+       // model->setItem(numOfOnline,0,new QStandardItem(ip));
         //设置颜色
-        model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
+        model->item(rows-1,0)->setForeground(QBrush(QColor(255,0,0)));
         //设置字符位置
-        model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
-        model->setItem(numOfOnline,1,new QStandardItem(name));
+        model->item(rows-1,0)->setTextAlignment(Qt::AlignCenter);
+        model->setItem(rows-1,1,new QStandardItem(name));
         //***************************************************
         this->ui->receiveMsg->setTextColor("gray");
         this->ui->receiveMsg->append("["+name+"]"+" 上线了...");
-        if(this->getIP() != ip)
+        if(this->getIP() != ip && model->findItems(ip).empty())
             this->SendMsg(this->MakeMsg("",ONLINE),QHostAddress(ip));
         break;
 
@@ -214,12 +219,15 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
 
         name = bytes.mid(nameStartIndex,len);
         tList = model->findItems(ip);//指定的条件
+        if(!tList.empty()){
+            tItem = tList.at(0);//按照第一列的值查找
 
-        tItem = tList.at(0);//按照第一列的值查找
+            row = tItem->row();
 
-        row = tItem->row();
+            model->removeRow(row);//移除
+        }
 
-        model->removeRow(row);//移除
+
         //*******************************************************************
         this->ui->receiveMsg->setTextColor("gray");
         this->ui->receiveMsg->append("["+name+"]"+" 下线了...");
@@ -345,6 +353,8 @@ int MultiChatDlg::SendMsg(QString str,QHostAddress host)
 
 void MultiChatDlg::on_icon_close_clicked()
 {
+    QString str = this->MakeMsg("",OFFLINE);
+    this->SendMsg(str,QHostAddress::Broadcast);
     this->close();
 }
 
