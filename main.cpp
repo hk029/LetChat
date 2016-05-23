@@ -21,6 +21,8 @@ int main(int argc, char *argv[])
 //    {
 //        qDebug()<<family;
 //    }
+    //获取所有网络接口的列表
+
     MultiChatDlg m;
     m.show();
 //    Widget w;

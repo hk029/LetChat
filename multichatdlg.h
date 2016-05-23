@@ -27,13 +27,13 @@ private slots:
     void on_icon_close_clicked();
 
     void on_icon_mini_clicked();
-
-    void on_pushButton_clicked();
     void on_sendButton_clicked();
+    void on_sendMsg_textChanged();
+
 protected:
      void paintEvent(QPaintEvent *event);
      void mousePressEvent(QMouseEvent *event);
-
+     bool eventFilter(QObject *, QEvent *);
      void mouseMoveEvent(QMouseEvent *event);
 //    void newConnect(); //连接服务器
 //    void readMessage();  //接收数据
@@ -65,5 +65,6 @@ private:
 };
 
 #endif // MULTICHATDLG_H
+
 
 
