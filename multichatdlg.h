@@ -31,7 +31,7 @@ private slots:
 protected:
      void paintEvent(QPaintEvent *event);
      void mousePressEvent(QMouseEvent *event);
-
+     bool eventFilter(QObject *, QEvent *);
      void mouseMoveEvent(QMouseEvent *event);
 //    void newConnect(); //连接服务器
 //    void readMessage();  //接收数据
