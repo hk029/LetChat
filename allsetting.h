@@ -5,14 +5,16 @@
 #include <QMouseEvent>
 #include <QStandardItemModel>
 #include "QPainter"
+#include <QMessageBox>
 #include <QtNetwork>
-#include <multichatdlg.h>
 const int PORT=11223;
 
 enum MsgType{
     ONLINE=1,
     OFFLINE,
-    TEXT
+    MULTEXT,
+    PRITEXT
+
 };
 
 #endif // ALLSETTING_H

@@ -2,7 +2,7 @@
 #define MAINDLG_H
 
 #include <QDialog>
-
+#include "multichatdlg.h"
 
 #include "allsetting.h"
 

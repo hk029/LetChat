@@ -2,9 +2,8 @@
 #define MULTICHATDLG_H
 
 #include <QDialog>
-
 #include "allsetting.h"
-
+#include "privatechatdlg.h"
 
 namespace Ui {
 class MultiChatDlg;
@@ -21,6 +20,8 @@ public:
     QString MakeMsg(QString str,int type);
     int ResolveMsg(QByteArray bytes);
     int SendMsg(QString str,QHostAddress host);
+signals:
+    void mysignal(QByteArray bytes);
 private slots:
     void processPendingDatagram();
 
@@ -29,6 +30,8 @@ private slots:
     void on_icon_mini_clicked();
     void on_sendButton_clicked();
     void on_sendMsg_textChanged();
+
+    void on_contactList_doubleClicked(const QModelIndex &index);
 
 protected:
      void paintEvent(QPaintEvent *event);
@@ -45,13 +48,14 @@ protected:
 
 
 private:
+    //SingleChatDlg *chatdlg;
+    PrivateChatDlg *pdlg;
     int blockSize;
     QHostAddress *hostIP;
     int port;
     QString name;
     Ui::MultiChatDlg *ui;
-    QUdpSocket *socket;
-
+   QUdpSocket *socket;
 
     QStandardItemModel  *model;
     int numOfOnline;
