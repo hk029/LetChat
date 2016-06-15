@@ -9,7 +9,7 @@ PrivateChatDlg::PrivateChatDlg(QWidget *parent) :
     socket = new QUdpSocket(this);
       socket->bind(PORT,QUdpSocket::ShareAddress);
      //connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
-      connect(this->parent(),SIGNAL(mysignal()),this,SLOT(processPendingDatagram()));
+     // connect(this->parent(),SIGNAL(mysignal()),this,SLOT(processPendingDatagram()));
       this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
       this->setAttribute(Qt::WA_TranslucentBackground);
        bkg.load(":/img/bkg.png");
@@ -191,6 +191,10 @@ void PrivateChatDlg::processPendingDatagram() //
      this->refreshtext();
  }
 
+QString PrivateChatDlg::getName()
+{
+    return this->name;
+}
 
  void PrivateChatDlg::refreshtext()
 {
@@ -214,6 +218,8 @@ void PrivateChatDlg::processPendingDatagram() //
   */
  void PrivateChatDlg::on_icon_close_clicked()
  {
+   //  emit closedlg();
+     this->name = "";
      this->close();
  }
 
@@ -285,3 +291,6 @@ int PrivateChatDlg::SendMsg(QString str,QHostAddress host)
     this->ui->sendMsg->clear();
     return socket->writeDatagram(data,QHostAddress::Broadcast,PORT);
 }
+
+
+

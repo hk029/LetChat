@@ -8,7 +8,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     ui(new Ui::MultiChatDlg)
 {
     ui->setupUi(this);
-    this->pdlg = NULL;
+    this->pdlg = new PrivateChatDlg();
     //*********************设置event filter*********************//
     this->installEventFilter(this);
     name = "hk";
@@ -16,7 +16,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
     connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
-
+    //connect(this->pdlg,SIGNAL(closedlg()),this,SLOT(pridlgclose()));
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -260,6 +260,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         case ONLINE:
         //get ip
         //*************chengcheng************
+        qDebug()<<"online";
         len = bytes[2];
         qDebug()<<len;
         ip = bytes.mid(3,len);
@@ -280,7 +281,9 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         this->ui->receiveMsg->append("["+name+"] "+reTime+" 上线了...");
 
         //update 5-23
-        if(this->getIP() != ip && model->findItems(ip).empty())
+        qDebug()<<this->getIP();
+        qDebug()<<ip;
+        if(this->getIP() != ip && model->findItems(name).empty())
             this->SendMsg(this->MakeMsg("",ONLINE),QHostAddress(ip));
         break;
 
@@ -292,7 +295,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         len = bytes[2+len+1];
 
         name = bytes.mid(nameStartIndex,len);
-        tList = model->findItems(ip);//指定的条件
+        tList = model->findItems(name);//指定的条件
         //update 5-23
         if(!tList.empty()){
             tItem = tList.at(0);//按照第一列的值查找
@@ -308,10 +311,8 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         this->ui->receiveMsg->append("["+name+"] " + reTime+" 下线了...");
         break;
 
-        case MULTEXT:
-        qDebug()<<"TEXT";
+        case MULTEXT:   
         lenName = bytes[2];
-        qDebug()<<lenName;
         name = bytes.mid(3,lenName);
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
         //**************2016.5.22****修改****判断输入是否为一串空格，若是，则弹出提示××××××××××××××××××××
@@ -332,12 +333,35 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         this->ui->receiveMsg->append(name+" "+reTime+":\n"+msg);
         break;
     case PRITEXT:
-        qDebug()<<"emit";
-        if(this->pdlg != NULL)
+        lenName = bytes[2];
+        name = bytes.mid(3,lenName);
+        msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
+        if(this->pdlg->getName() != "")
         {
             this->pdlg->ResolveMsg(bytes);
         }
-        emit this->mysignal(bytes);
+        else{
+            //新建一个对话框
+            qDebug()<<"1";
+            this->pdlg = new PrivateChatDlg();
+            this->pdlg->setName(this->name,name);
+            tList = model->findItems(name);//指定的条件
+            //update 5-23
+            for(int i = 0;i < this->numOfOnline;i++)
+            {
+                 QString oth = this->model->data(model->index(i,0)).toString();
+                 qDebug()<<oth;
+                 qDebug()<<name;
+                if(oth == name)
+                {
+                    QString ip = this->model->data(model->index(i,1)).toString();
+                    this->pdlg->setHostIP(ip);
+                    this->pdlg->ResolveMsg(bytes);
+                    this->pdlg->show();
+                }
+            }
+        }
+        //emit this->mysignal(bytes);
         break;
     default:
         return -1;
@@ -361,7 +385,6 @@ void MultiChatDlg::processPendingDatagram() //
 {
     while(socket->hasPendingDatagrams())  //拥有等待的数据报
     {
-       qDebug()<<"222";
        QByteArray datagram; //拥于存放接收的数据报
        //让datagram的大小为等待处理的数据报的大小，这样才能接收到完整的数据
        datagram.resize(socket->pendingDatagramSize());
@@ -370,30 +393,13 @@ void MultiChatDlg::processPendingDatagram() //
        //将数据报内容显示出来
        this->ResolveMsg(datagram);
 
-//       ui->receiveMsg->append(datagram);
-//       ui->label->setText(datagram);
-
-
-//       //在表格中添加登录状态
-//       numOfOnline++;
-//       model->setItem(numOfOnline,0,new QStandardItem("111"));
-//       //设置颜色
-//       model->item(numOfOnline,0)->setForeground(QBrush(QColor(255,0,0)));
-//       //设置字符位置
-//       model->item(numOfOnline,0)->setTextAlignment(Qt::AlignCenter);
-//       model->setItem(numOfOnline,1,new QStandardItem(QString::fromLocal8Bit("haha")));
-
-//       for(int i = 0; i<3; i++){
-//           model->setItem(i,0,new QStandardItem("11111"));
-//           //设置颜色
-//           model->item(i,0)->setForeground(QBrush(QColor(255,0,0)));
-//           //设置字符位置
-//           model->item(i,0)->setTextAlignment(Qt::AlignCenter);
-//           model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
-//       }
     }
 }
 
+void MultiChatDlg::pridlgclose()
+{
+    this->pdlg = NULL;
+}
 
 
  bool MultiChatDlg::setHostIP(QString ip)
@@ -401,41 +407,6 @@ void MultiChatDlg::processPendingDatagram() //
     return this->hostIP->setAddress(ip);
 }
 
-//void Widget::newConnect()
-//{
-//    blockSize = 0; //初始化其为0
-//    tcpSocket->abort(); //取消已有的连接
-
-////连接到主机，这里从界面获取主机地址和端口号
-////    tcpSocket->connectToHost(ui->hostLineEdit->text(),
-////                             ui->portLineEdit->text().toInt());
-//}
-
-//void Widget::displayError(QAbstractSocket::SocketError)
-//{
-//    qDebug() << tcpSocket->errorString(); //输出错误信息
-//}
-
-//void Widget::readMessage()
-//{
-//    QString message;
-//    QDataStream in(tcpSocket);
-//    in.setVersion(QDataStream::Qt_4_8);
-//    //设置数据流版本，这里要和服务器端相同
-//    if(blockSize==0) //如果是刚开始接收数据
-//    {
-//       //判断接收的数据是否有两字节，也就是文件的大小信息
-//       //如果有则保存到blockSize变量中，没有则返回，继续接收数据
-//       if(tcpSocket->bytesAvailable() < (int)sizeof(quint16)) return;
-//       in >> blockSize;
-//    }
-//    if(tcpSocket->bytesAvailable() < blockSize) return;
-//    //如果没有得到全部的数据，则返回，继续接收数据
-//    in >> message;
-//    //将接收到的数据存放到变量中
-//    ui->textBrowser->setText(message);
-//    //显示接收到的数据
-//}
 
 
  /**
@@ -568,13 +539,9 @@ void MultiChatDlg::on_sendMsg_textChanged()
 void MultiChatDlg::on_contactList_doubleClicked(const QModelIndex &index)
 {
     //获得名字
-    qDebug()<<index.row();
     QString oth = this->model->data(model->index(index.row(),0)).toString();
-    qDebug()<<oth;
     //获得ip
     QString ip = this->model->data(model->index(index.row(),1)).toString();
-    qDebug()<<ip;
-    this->pdlg = new PrivateChatDlg();
     this->pdlg->setName(this->name,oth);
     this->pdlg->setHostIP(ip);
     this->pdlg->show();

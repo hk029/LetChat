@@ -18,11 +18,14 @@ public:
     ~PrivateChatDlg();
     void setName(QString n,QString oth);
     void refreshtext();
+    QString getName();
     bool setHostIP(QString);
     QString MakeMsg(QString str,int type);
     int ResolveMsg(QByteArray bytes);
     int SendMsg(QString str,QHostAddress host);
    QUdpSocket *socket;
+signals:
+    void closedlg();
 protected:
      void mousePressEvent(QMouseEvent *event);
      void mouseMoveEvent(QMouseEvent *event);

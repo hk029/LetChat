@@ -26,7 +26,7 @@ signals:
     void mysignal(QByteArray bytes);
 private slots:
     void processPendingDatagram();
-
+    void pridlgclose();
     void on_icon_close_clicked();
 
     void on_icon_mini_clicked();
