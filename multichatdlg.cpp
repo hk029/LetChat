@@ -272,22 +272,30 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         name = bytes.mid(nameStartIndex,len);
         //在表格中添加登录状态
         numOfOnline++;
-        model->appendRow(new QStandardItem(name));
-        rows= model->rowCount();
-       // model->setItem(numOfOnline,0,new QStandardItem(ip));
-        //设置颜色
-        model->item(rows-1,0)->setForeground(QBrush(QColor(255,0,0)));
-        //设置字符位置
-        model->item(rows-1,0)->setTextAlignment(Qt::AlignCenter);
-        model->setItem(rows-1,1,new QStandardItem(ip));
-        this->ui->receiveMsg->setTextColor("gray");
-        this->ui->receiveMsg->append("["+name+"] "+reTime+" 上线了...");
-
+        qDebug()<<"on1";
+        if(this->getIP() != ip && model->findItems(name).empty())
+        {
+            qDebug()<<"on";
+            this->SendMsg(this->MakeMsg("",ONLINE),QHostAddress(ip));
+        }
+        if(model->findItems(name).empty())
+        {
+            qDebug()<<"on2";
+            model->appendRow(new QStandardItem(name));
+            rows= model->rowCount();
+           // model->setItem(numOfOnline,0,new QStandardItem(ip));
+            //设置颜色
+            model->item(rows-1,0)->setForeground(QBrush(QColor(255,0,0)));
+            //设置字符位置
+            model->item(rows-1,0)->setTextAlignment(Qt::AlignCenter);
+            model->setItem(rows-1,1,new QStandardItem(ip));
+            this->ui->receiveMsg->setTextColor("gray");
+            this->ui->receiveMsg->append("["+name+"] "+reTime+" 上线了...");
+        }
         //update 5-23
         qDebug()<<this->getIP();
         qDebug()<<ip;
-        if(this->getIP() != ip && model->findItems(name).empty())
-            this->SendMsg(this->MakeMsg("",ONLINE),QHostAddress(ip));
+
         break;
 
         case OFFLINE:
@@ -346,7 +354,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         else{
             //新建一个对话框
             qDebug()<<"1";
-            this->pdlg = new PrivateChatDlg();
+           // this->pdlg = new PrivateChatDlg();
             this->pdlg->setName(this->name,name);
             tList = model->findItems(name);//指定的条件
             //update 5-23

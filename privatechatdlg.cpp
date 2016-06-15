@@ -13,6 +13,7 @@ PrivateChatDlg::PrivateChatDlg(QWidget *parent) :
       this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
       this->setAttribute(Qt::WA_TranslucentBackground);
        bkg.load(":/img/bkg.png");
+       this->name = "";
        //*********************±ÍÃ‚¿∏*********************//
       QIcon icon;
       QPixmap icon_close(":/img/icon_close.png");

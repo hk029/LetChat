@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
 
     LoginDlg login;
-    MultiChatDlg m;
+    MultiChatDlg *m;
     login.exec();
     QString name;
     name = login.getName();
@@ -23,9 +23,10 @@ int main(int argc, char *argv[])
         return a.exec();
     else
     {
-       m.setName(name);
-       m.onLine();
-       m.show();
+        m = new MultiChatDlg();
+        m->setName(name);
+        m->onLine();
+        m->show();
        return a.exec();
     }
 
