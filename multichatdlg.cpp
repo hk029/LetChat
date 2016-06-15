@@ -39,30 +39,30 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     qss = qssfile.readAll();
     this->setStyleSheet(qss);
 
-    this->setStyleSheet("QLabel{"
-                        "color:#4a4a4a;"
-                         "}"
+//    this->setStyleSheet("QLabel{"
+//                        "color:#4a4a4a;"
+//                         "}"
 
-                        "QPushButton{"
-                        "background-color:#666666;color:white;"
-                        "border:0px;"
-                        "}"
-                        "QTextBrowser{"
-                        "color:red;"
-                        "}"
-                        "QToolButton{"
-                        "border:0px;"
-                        "}"
-                        "QToolButton:hover{"
-                        "background-color:#ff5400;"
-                        "}"
-                        "QToolButton:pressed{"
-                        "background-color:#fff;"
-                        "}"
-                        "QPushButton:hover{"
-                        "background-color:#D35400;"
-                        "}"
-                        );
+//                        "QPushButton{"
+//                        "background-color:#666666;color:white;"
+//                        "border:0px;"
+//                        "}"
+//                        "QTextBrowser{"
+//                        "color:red;"
+//                        "}"
+//                        "QToolButton{"
+//                        "border:0px;"
+//                        "}"
+//                        "QToolButton:hover{"
+//                        "background-color:#ff5400;"
+//                        "}"
+//                        "QToolButton:pressed{"
+//                        "background-color:#fff;"
+//                        "}"
+//                        "QPushButton:hover{"
+//                        "background-color:#D35400;"
+//                        "}"
+//                        );
 //    tcpSocket = new QTcpSocket(this);
 //    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
 //    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
@@ -86,27 +86,10 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     //设置列宽不可变
     ui->contactList->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
     ui->contactList->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
-    ui->contactList->setColumnWidth(0,150);
-    ui->contactList->setColumnWidth(1,100);
-    //3.添加行
-//    for(int i = 0; i<3; i++){
-//        model->setItem(i,0,new QStandardItem("11111"));
-//        //设置颜色
-//        model->item(i,0)->setForeground(QBrush(QColor(255,0,0)));
-//        //设置字符位置
-//        model->item(i,0)->setTextAlignment(Qt::AlignCenter);
-//        model->setItem(i,1,new QStandardItem(QString::fromLocal8Bit("haha")));
-//    }
+    ui->contactList->setColumnWidth(0,100);
+    ui->contactList->setColumnWidth(1,150);
 
-    QString IP = this->getIP();
-    QString s = this->MakeMsg(IP+'/'+this->name,ONLINE);
-    this->SendMsg(s,QHostAddress::Broadcast);
-//    int row = tItem->row();
 
-    //************************初始内容为空,发送按钮不可用
-    //bool bool_dis = this->ui->sendMsg->toPlainText().isEmpty();
-    //this->ui->sendButton
-    //this->ui->sendButton->setDisabled(bool_dis);
 
 }
 
@@ -115,12 +98,21 @@ MultiChatDlg::~MultiChatDlg()
     delete ui;
 }
 
-//*********************add change_btn_stat()
-//void MultiChatDlg::change_btn_stat()
-//{
- //    bool bool_dis = this->ui->sendMsg->toPlainText().isEmpty();
-  //   this->ui->sendButton->setDisabled(bool_dis);
-//}
+
+int MultiChatDlg::setName(QString name)
+{
+    this->name = name;
+    qDebug()<<this->name;
+    return 1;
+}
+
+ int MultiChatDlg::onLine()
+ {
+     QString IP = this->getIP();
+     qDebug()<<this->name;
+     QString s = this->MakeMsg(IP+'/'+this->name,ONLINE);
+     this->SendMsg(s,QHostAddress::Broadcast);
+ }
 
 
 /**
@@ -203,6 +195,7 @@ QString MultiChatDlg::MakeMsg(QString str,int type)
         bytes.append(ip.length());
         bytes.append(ip);
         bytes.append(this->name.length());
+        qDebug()<<this->name.length();
         bytes.append(this->name);
         break;
         case OFFLINE:
@@ -265,10 +258,10 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
     switch((int)type)
     {
         case ONLINE:
-        len = bytes[2];
         //get ip
         //*************chengcheng************
         len = bytes[2];
+        qDebug()<<len;
         ip = bytes.mid(3,len);
         nameStartIndex = 2+len+1+1;
         len = bytes[2+len+1];

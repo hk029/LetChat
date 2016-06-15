@@ -3,6 +3,7 @@
 #include "multichatdlg.h"
 #include "maindlg.h"
 #include "QFontDatabase"
+#include "logindlg.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -12,21 +13,21 @@ int main(int argc, char *argv[])
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForLocale());
     QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
-//    QFontDatabase database;
-//    foreach (const QString &family, database.families())
-//    {
-//         qDebug()<<family;
-//    }
-//    foreach (const QString &family, database.families(QFontDatabase::SimplifiedChinese))
-//    {
-//        qDebug()<<family;
-//    }
-    //获取所有网络接口的列表
 
+    LoginDlg login;
     MultiChatDlg m;
-    m.show();
-//    Widget w;
-//    w.show();
-    
-    return a.exec();
+    login.exec();
+    QString name;
+    name = login.getName();
+    if(name == "")
+        return a.exec();
+    else
+    {
+       m.setName(name);
+       m.onLine();
+       m.show();
+       return a.exec();
+    }
+
+
 }

@@ -17,9 +17,11 @@ public:
     ~MultiChatDlg();
     bool setHostIP(QString);
     QString getIP();
+    int setName(QString name);
     QString MakeMsg(QString str,int type);
     int ResolveMsg(QByteArray bytes);
     int SendMsg(QString str,QHostAddress host);
+    int onLine();
 signals:
     void mysignal(QByteArray bytes);
 private slots:

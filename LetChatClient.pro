@@ -13,18 +13,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
     multichatdlg.cpp \
     maindlg.cpp \
-    privatechatdlg.cpp
+    privatechatdlg.cpp \
+    logindlg.cpp
 
 HEADERS  += \
     multichatdlg.h \
     maindlg.h \
     allsetting.h \
-    privatechatdlg.h
+    privatechatdlg.h \
+    logindlg.h
 
 FORMS    += \
     multichatdlg.ui \
     maindlg.ui \
-    privatechatdlg.ui
+    privatechatdlg.ui \
+    logindlg.ui
 
 RESOURCES += \
     image.qrc
