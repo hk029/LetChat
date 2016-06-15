@@ -8,7 +8,8 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     ui(new Ui::MultiChatDlg)
 {
     ui->setupUi(this);
-    this->pdlg = new PrivateChatDlg();
+
+
     //*********************ÉèÖÃevent filter*********************//
     this->installEventFilter(this);
     name = "hk";
@@ -16,6 +17,8 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     socket = new QUdpSocket(this);
     socket->bind(PORT,QUdpSocket::ShareAddress);
     connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
+    this->pdlg = new PrivateChatDlg();
+    this->pdlg->setSocket(this->socket);
     //connect(this->pdlg,SIGNAL(closedlg()),this,SLOT(pridlgclose()));
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -542,6 +545,7 @@ void MultiChatDlg::on_contactList_doubleClicked(const QModelIndex &index)
     QString oth = this->model->data(model->index(index.row(),0)).toString();
     //»ñµÃip
     QString ip = this->model->data(model->index(index.row(),1)).toString();
+    //this->pdlg  = new PrivateChatDlg();
     this->pdlg->setName(this->name,oth);
     this->pdlg->setHostIP(ip);
     this->pdlg->show();

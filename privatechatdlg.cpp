@@ -6,8 +6,8 @@ PrivateChatDlg::PrivateChatDlg(QWidget *parent) :
     ui(new Ui::PrivateChatDlg)
 {
     ui->setupUi(this);
-    socket = new QUdpSocket(this);
-      socket->bind(PORT,QUdpSocket::ShareAddress);
+    //socket = new QUdpSocket(this);
+    //socket->bind(PORT,QUdpSocket::ShareAddress);
      //connect(socket,SIGNAL(readyRead()),this,SLOT(processPendingDatagram()));
      // connect(this->parent(),SIGNAL(mysignal()),this,SLOT(processPendingDatagram()));
       this->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -190,7 +190,10 @@ void PrivateChatDlg::processPendingDatagram() //
      this->OtherName = oth;
      this->refreshtext();
  }
-
+ void PrivateChatDlg::setSocket(QUdpSocket *s)
+{
+     this->socket = s;
+ }
 QString PrivateChatDlg::getName()
 {
     return this->name;

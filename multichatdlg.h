@@ -22,6 +22,7 @@ public:
     int ResolveMsg(QByteArray bytes);
     int SendMsg(QString str,QHostAddress host);
     int onLine();
+    QUdpSocket *socket;
 signals:
     void mysignal(QByteArray bytes);
 private slots:
@@ -57,7 +58,7 @@ private:
     int port;
     QString name;
     Ui::MultiChatDlg *ui;
-   QUdpSocket *socket;
+
 
     QStandardItemModel  *model;
     int numOfOnline;

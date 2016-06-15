@@ -16,6 +16,7 @@ public:
     explicit PrivateChatDlg(QWidget *parent = 0);
     PrivateChatDlg(QUdpSocket *s);
     ~PrivateChatDlg();
+    void setSocket(QUdpSocket *s);
     void setName(QString n,QString oth);
     void refreshtext();
     QString getName();
