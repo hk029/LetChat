@@ -342,11 +342,14 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         this->ui->receiveMsg->append(name+" "+reTime+":\n"+msg);
         break;
     case PRITEXT:
+        qDebug()<<"pri";
         lenName = bytes[2];
         name = bytes.mid(3,lenName);
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
         if(this->pdlg->getName() != "")
         {
+            qDebug()<<"234";
+            qDebug()<<this->pdlg->getName();
             this->pdlg->ResolveMsg(bytes);
         }
         else{
@@ -355,7 +358,6 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
            // this->pdlg = new PrivateChatDlg();
             this->pdlg->setName(this->name,name);
             tList = model->findItems(name);//指定的条件
-            //update 5-23
             for(int i = 0;i < this->numOfOnline;i++)
             {
                  QString oth = this->model->data(model->index(i,0)).toString();
@@ -369,6 +371,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
                     this->pdlg->show();
                 }
             }
+             this->pdlg->show();
         }
         //emit this->mysignal(bytes);
         break;

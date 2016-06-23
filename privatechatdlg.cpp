@@ -124,7 +124,6 @@ int PrivateChatDlg::ResolveMsg(QByteArray bytes)
     {
         case PRITEXT:
         lenName = bytes[2];
-        qDebug()<<lenName;
         name = bytes.mid(3,lenName);
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
         //**************2016.5.22****修改****
@@ -142,7 +141,6 @@ int PrivateChatDlg::ResolveMsg(QByteArray bytes)
         //********************
         //time = QDateTime::currentDateTime();//获取系统现在的时间
         //reTime = time.toString("hh:mm"); //设置显示格式
-        qDebug()<<reTime;
         this->ui->receiveMsg->append(name+" "+reTime+":\n"+msg);
         break;
     default:
@@ -171,7 +169,6 @@ void PrivateChatDlg::paintEvent(QPaintEvent *event)
 
 void PrivateChatDlg::processPendingDatagram() //
 {
-    qDebug()<<"111";
     while(socket->hasPendingDatagrams())  //拥有等待的数据报
     {
 
@@ -190,6 +187,8 @@ void PrivateChatDlg::processPendingDatagram() //
      this->name = n;
      this->OtherName = oth;
      this->refreshtext();
+     qDebug()<<"123";
+     qDebug()<<oth;
  }
  void PrivateChatDlg::setSocket(QUdpSocket *s)
 {
