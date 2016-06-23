@@ -324,11 +324,7 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         lenName = bytes[2];
         name = bytes.mid(3,lenName);
         msg = bytes.mid(3+lenName,(bytes.length()-(3+lenName)));
-        //**************2016.5.22****修改****判断输入是否为一串空格，若是，则弹出提示××××××××××××××××××××
-        if(msg.trimmed().length() == 0){
-            QMessageBox::warning(this, "错误", QString::fromLocal8Bit("发送的内容不能为空"), "好的");
-            break;
-        }
+
         if(name == this->name){
             this->ui->receiveMsg->setTextColor("red");
         }
@@ -434,6 +430,11 @@ void MultiChatDlg::pridlgclose()
 void MultiChatDlg::on_sendButton_clicked()
 {
     QString str =  this->ui->sendMsg->toPlainText();
+    //**************2016.5.22****修改****判断输入是否为一串空格，若是，则弹出提示××××××××××××××××××××
+    if(str.trimmed().length() == 0){
+        QMessageBox::warning(this, "错误", QString::fromLocal8Bit("发送的内容不能为空"), "好的");
+        return;
+    }
     str = this->MakeMsg(str,MULTEXT);
     //just point to point
     //this->SendMsg(str,QHostAddress("192.168.0.128"));

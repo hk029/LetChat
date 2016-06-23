@@ -284,6 +284,11 @@ void PrivateChatDlg::on_sendMsg_textChanged()
 void PrivateChatDlg::on_sendButton_clicked()
 {
     QString str =  this->ui->sendMsg->toPlainText();
+    //**************2016.5.22****修改****判断输入是否为一串空格，若是，则弹出提示××××××××××××××××××××
+    if(str.trimmed().length() == 0){
+        QMessageBox::warning(this, "错误", QString::fromLocal8Bit("发送的内容不能为空"), "好的");
+        return;
+    }
     str = this->MakeMsg(str,PRITEXT);
    this->SendMsg(str,*this->hostIP);
 }
