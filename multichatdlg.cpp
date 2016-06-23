@@ -69,7 +69,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
 //    tcpSocket = new QTcpSocket(this);
 //    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
 //    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
-    numOfOnline = -1;
+    numOfOnline = 0;
 
 
     //******************chengcheng******************************
@@ -354,24 +354,27 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
         }
         else{
             //新建一个对话框
-            qDebug()<<"1";
+
            // this->pdlg = new PrivateChatDlg();
             this->pdlg->setName(this->name,name);
             tList = model->findItems(name);//指定的条件
             for(int i = 0;i < this->numOfOnline;i++)
             {
+
                  QString oth = this->model->data(model->index(i,0)).toString();
+                  qDebug()<<this->numOfOnline;
                  qDebug()<<oth;
                  qDebug()<<name;
-                if(oth == name)
+                if(oth != this->name)
                 {
+                    qDebug()<<"23";
                     QString ip = this->model->data(model->index(i,1)).toString();
                     this->pdlg->setHostIP(ip);
                     this->pdlg->ResolveMsg(bytes);
                     this->pdlg->show();
                 }
             }
-             this->pdlg->show();
+            // this->pdlg->show();
         }
         //emit this->mysignal(bytes);
         break;
