@@ -91,6 +91,7 @@ MultiChatDlg::MultiChatDlg(QWidget *parent) :
     ui->contactList->horizontalHeader()->setResizeMode(1,QHeaderView::Fixed);
     ui->contactList->setColumnWidth(0,100);
     ui->contactList->setColumnWidth(1,150);
+    ui->contactList->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 
 
@@ -292,9 +293,6 @@ int MultiChatDlg::ResolveMsg(QByteArray bytes)
             this->ui->receiveMsg->setTextColor("gray");
             this->ui->receiveMsg->append("["+name+"] "+reTime+" 上线了...");
         }
-        //update 5-23
-        qDebug()<<this->getIP();
-        qDebug()<<ip;
 
         break;
 
@@ -552,10 +550,13 @@ void MultiChatDlg::on_contactList_doubleClicked(const QModelIndex &index)
     //获得名字
     QString oth = this->model->data(model->index(index.row(),0)).toString();
     //获得ip
-    QString ip = this->model->data(model->index(index.row(),1)).toString();
-    //this->pdlg  = new PrivateChatDlg();
-    this->pdlg->setName(this->name,oth);
-    this->pdlg->setHostIP(ip);
-    this->pdlg->show();
+    if(this->name != oth)
+    {
+        QString ip = this->model->data(model->index(index.row(),1)).toString();
+        //this->pdlg  = new PrivateChatDlg();
+        this->pdlg->setName(this->name,oth);
+        this->pdlg->setHostIP(ip);
+        this->pdlg->show();
+    }
 
 }
